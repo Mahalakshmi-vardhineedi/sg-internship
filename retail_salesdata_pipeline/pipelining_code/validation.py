@@ -1,10 +1,10 @@
 import pandas as pd
 from sqlalchemy import create_engine, text
-customers = pd.read_csv("C:/Users/mounika chintakayala/Desktop/intern/project/customers.csv")
-products = pd.read_csv("C:/Users/mounika chintakayala/Desktop/intern/project/products.csv")
-sales = pd.read_csv("C:/Users/mounika chintakayala/Desktop/intern/project/sales.csv")
-stores = pd.read_csv("C:/Users/mounika chintakayala/Desktop/intern/project/store.csv")
-refunds = pd.read_csv("C:/Users/mounika chintakayala/Desktop/intern/project/refunds.csv")
+customers = pd.read_csv("C:/Users/mounika chintakayala/Desktop/intern/project/sg-internship/retail_salesdata_pipeline/datasets/customers.csv")
+products = pd.read_csv("C:/Users/mounika chintakayala/Desktop/intern/project/sg-internship/retail_salesdata_pipeline/datasets/products.csv")
+sales = pd.read_csv("C:/Users/mounika chintakayala/Desktop/intern/project/sg-internship/retail_salesdata_pipeline/datasets/sales.csv")
+stores = pd.read_csv("C:/Users/mounika chintakayala/Desktop/intern/project/sg-internship/retail_salesdata_pipeline/datasets/store.csv")
+refunds = pd.read_csv("C:/Users/mounika chintakayala/Desktop/intern/project/sg-internship/retail_salesdata_pipeline/datasets/refunds.csv")
 
 #ghadhmgdfzhtdmv tdgmbfhtgcbmvjyfdhmcvgmbf nhcftgn
 # print(customers.head(),"\n")
@@ -109,7 +109,7 @@ print(df_top5_reasons)
 
 df_top5_products = """
 SELECT s.product_id,ROUND(SUM((s.unit_price * s.quantity) - r.refund_amount),2) AS revenue 
-FROM sales s JOIN refunds r ON s.product_id = r.product_id
+FROM sales s LEFT JOIN refunds r ON s.product_id = r.product_id
 GROUP BY s.product_id 
 ORDER BY revenue DESC
 LIMIT 5;
@@ -119,7 +119,7 @@ print(df_top5_products)
 
 df_top5_customers = """
 SELECT c.customer_id, c.name, ROUND(SUM(s.quantity * s.unit_price - r.refund_amount),2) AS revenue
-FROM sales s JOIN refunds r ON s.sale_id = r.order_id JOIN customers c ON c.customer_id = s.customer_id
+FROM sales s LEFT JOIN refunds r ON s.sale_id = r.order_id RIGHT JOIN customers c ON c.customer_id = s.customer_id
 GROUP BY c.customer_id, c.name
 ORDER BY revenue DESC LIMIT 5;
 """
